@@ -248,13 +248,11 @@ public:
         }
         return ret;
     }
-    bool IsState1or5() const { return (mState != 1 && mState != 5);  }
-    bool IsState1or5AndSameOwner(int owner) const {
-        bool ret = false;
-        if (owner == mOwnerNum) {
-            if ((mState != 1 && mState != 5))
-                ret = true;
-        }
+    bool IsState1or5() const { return (mState == 1 || mState == 5);  }
+    u8 IsState1or5AndSameOwner(int owner) const {
+        u8 ret = 0;
+        if (owner == mOwnerNum)
+            ret = IsState1or5();
         return ret;
     }
 

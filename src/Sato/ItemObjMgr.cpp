@@ -2,8 +2,12 @@
 #include "JSystem/JUtility/JUTDbPrint.h"
 #include "JSystem/J3D/J3DModelLoader.h"
 #include "JSystem/J3D/J3DTransform.h"
+#include "JSystem/J3D/J3DSys.h"
+#include "Kaneshige/DarkAnmMgr.h"
 #include "Kaneshige/ExModel.h"
+#include "Kaneshige/LightMgr.h"
 #include "Kaneshige/Objects/GeoRabbitMark.h"
+#include "Kaneshige/SimpleDrawer.h"
 #include "Kaneshige/TexLODControl.h"
 #include "Kaneshige/RaceMgr.h"
 #include "Sato/GeographyObjMgr.h"
@@ -1411,18 +1415,12 @@ void ItemObjMgr::update(ItemObjMgr::eDrawSimplModelItemType type, int id) {
         for (JSUListIterator<ItemObj> it(_3e8[sJ3DUpdateItemKind[i]].getFirst()); it.isAvailable(); ++it) {
             bool doUpdate = true;
             switch(type) {
-            case ItemType_1: {
-                if (it->IsState1or5AndSameOwner(id))
-                    doUpdate = false;
+            case ItemType_1:
+                doUpdate = (it->IsState1or5AndSameOwner(id) != 0);
                 break;
-            }
-            case ItemType_2: {
-                doUpdate = false;
-                int state = it->getState();
-                if (state != 1 && state != 5)
-                    doUpdate = true;
+            case ItemType_2:
+                doUpdate = !it->IsState1or5();
                 break;
-            }
             }
 
             if (doUpdate) {
@@ -1465,27 +1463,54 @@ void ItemObjMgr::setCurrentViewNo(u32 viewNo)
 }
 
 void ItemObjMgr::drawSimpleModel(u32 viewNo, ItemObjMgr::eDrawSimplModelItemType type, int owner, LightObj *lightObj) {
-    
-    for (JSUListIterator<ItemObj> it(_3e8[7].getFirst()); it.isAvailable(); ++it) {
-        bool doUpdate = true;
-        switch(type) {
-        case ItemType_1: {
-            if (it->IsState1or5AndSameOwner(owner))
-                doUpdate = false;
-            break;
-        }
-        case ItemType_2: {
-            doUpdate = false;
-            int state = it->getState();
-            if (state != 1 && state != 5)
-                doUpdate = true;
-            break;
-        }
-        }
+    J3DUClipper *clipper = &KartCtrl::getKartCtrl()->mKartCams[viewNo]->mClipper;
+    f32 (*viewMtx)[4] = (f32 (*)[4])&j3dSys;
+    MtxPtr lightMtx = nullptr;
+    if (lightObj != nullptr)
+        lightMtx = lightObj->getEffectMtx();
 
-        if (doUpdate) {
-            //it->drawSimpleModel(viewNo, j3dSys.getViewMtx(), );
+    SimpleDrawer drawer;
+    for (int i = 0; i < 5; i++) {
+        JSUList<ItemObj> *list = &_3e8[sSimpleDrawItemKind[i]];
+        JSULink<ItemObj> *link = list->getFirst();
+        if (link != nullptr) {
+            ItemObj *obj = link->getObject();
+            ExModel *mdl = &obj->mModel;
+            if (mdl->isAvailable()) {
+                drawer.drawInit(mdl);
+                while (drawer.loadPreDrawSetting()) {
+                    for (JSUListIterator<ItemObj> it(list->getFirst()); it.isAvailable(); ++it) {
+                        bool doDraw = true;
+                        switch (type) {
+                        case ItemType_1:
+                            doDraw = (it->IsState1or5AndSameOwner(owner) != 0);
+                            break;
+                        case ItemType_2:
+                            doDraw = !it->IsState1or5();
+                            break;
+                        }
+                        if (doDraw) {
+                            it->setTevColor();
+                            it->simpleDraw(viewNo, lightMtx, sSimpleDrawSpeqEnvTexMapID[i]);
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    for (JSUListIterator<ItemObj> it(_3e8[7].getFirst()); it.isAvailable(); ++it) {
+        bool doDraw = true;
+        switch (type) {
+        case ItemType_1:
+            doDraw = (it->IsState1or5AndSameOwner(owner) != 0);
+            break;
+        case ItemType_2:
+            doDraw = !it->IsState1or5();
+            break;
+        }
+        if (doDraw)
+            it->drawSimpleModel(viewNo, viewMtx, clipper, lightMtx);
     }
 }
 
