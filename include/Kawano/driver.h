@@ -133,14 +133,16 @@ public:
 
     GameAudio::CharacterSoundMgr* getGameAudioCharacterSoundMgr() { return mCharSoundMgr; }
 
-    int IsChange();
+    bool IsChange();
     int IsChangeBack();
     int IsChangeFront();
     int IsSit();
     int IsStand();
 
 public:
-    u8 _8c[0xfc - 0x8c];
+    u8 _8c[0xa8 - 0x8c];
+    int mState; // _a8
+    u8 _ac[0xfc - 0xac];
     f32 _fc[11];
     u8 _128[0x6c0 - 0x128];
 private:
