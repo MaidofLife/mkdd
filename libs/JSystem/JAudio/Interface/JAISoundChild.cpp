@@ -1,9 +1,5 @@
 #include "JSystem/JAudio/Interface/JAISound.h"
 
-#ifdef DEBUG
-#pragma sym on
-#endif
-
 void JAISoundChild::init() {
     mMove.init();
     mParams.init();
@@ -22,6 +18,3 @@ void JAISoundChild::calc()
 
 #include "JSystem/JAudio/JASFakeMatch7.h"
 
-#ifdef DEBUG
-#pragma sym off
-#endif

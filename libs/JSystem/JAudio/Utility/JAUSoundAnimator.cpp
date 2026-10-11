@@ -5,7 +5,7 @@
 
 #include "JSystem/JAudio/JASFakeMatch.h"
 
-int JAUSoundAnimation::getStartSoundIndex(f32 frame) const {
+inline int JAUSoundAnimation::getStartSoundIndex(f32 frame) const {
     // UNUSED
     // Size: 0xe0(mismatch)
     int i;
@@ -17,7 +17,7 @@ int JAUSoundAnimation::getStartSoundIndex(f32 frame) const {
     return i;
 }
 
-int JAUSoundAnimation::getEndSoundIndex(f32 frame) const {
+inline int JAUSoundAnimation::getEndSoundIndex(f32 frame) const {
     // UNUSED
     // Size: 0xdc(mismatch)
     int i;
@@ -35,17 +35,25 @@ JAUSoundAnimator::JAUSoundAnimator(JAISoundHandles *handles) {
     reverse_ = false;
 }
 
-void JAUSoundAnimator::setHandles(JAISoundHandles *handles) {
+inline void JAUSoundAnimator::setHandles(JAISoundHandles *handles) {
     // UNUSED
     // Size: 0xe4(mismatch)
     JUT_ASSERT(!handles_ || !handles_->isActive());
     handles_ = handles;
 }
 
-void JAUSoundAnimator::removeAnimation() {
+inline void JAUSoundAnimator::removeAnimation() {
     // UNUSED
     // size: 0x0c
     animation_ = NULL;
+}
+
+static void weakSpawner() {
+    void (JAUSoundAnimator::*fp2)(JAISoundHandles *) = &JAUSoundAnimator::setHandles;
+    void (JAUSoundAnimator::*fp3)() = &JAUSoundAnimator::removeAnimation;
+    int (JAUSoundAnimation::*fp0)(f32) const = &JAUSoundAnimation::getStartSoundIndex;
+    int (JAUSoundAnimation::*fp1)(f32) const = &JAUSoundAnimation::getEndSoundIndex;
+    (void)fp0; (void)fp1; (void)fp2; (void)fp3;
 }
 
 void JAUSoundAnimator::ageSounds_() {

@@ -11,3 +11,6 @@ JAUAudioMgr::JAUAudioMgr(JAUSectionHeap *) : JAUSoundInfo(true) {
 }
 
 #include "JSystem/JAudio/JASFakeMatch12.h"
+
+template <typename T>
+JASMemPool<T>::~JASMemPool() {}

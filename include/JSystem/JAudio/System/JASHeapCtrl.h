@@ -39,7 +39,7 @@ template <typename T>
 struct JASMemPool : public JASGenericMemPool
 {
     JASMemPool<T>() : JASGenericMemPool() {}
-    ~JASMemPool<T>() {}
+    ~JASMemPool<T>();
 
     typedef JASMemPool<T> JASMemPoolT;
 
@@ -256,6 +256,8 @@ template <typename T>
 struct JASMemPool_MultiThreaded : public JASGenericMemPool
 {
     typedef JASMemPool_MultiThreaded<T> TJASMemPool_MultiThreaded;
+
+    ~JASMemPool_MultiThreaded<T>();
     typedef typename JASThreadingModel::InterruptsDisable<TJASMemPool_MultiThreaded>::Lock TLock;
     
     void newMemPool(int count)

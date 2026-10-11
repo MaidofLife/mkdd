@@ -344,3 +344,6 @@ JAITempoMgr *JAISeq::getTempoMgr()
 }
 
 #include "JSystem/JAudio/JASFakeMatch6.h"
+
+template <typename T>
+JASMemPool<T>::~JASMemPool() {}

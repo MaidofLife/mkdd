@@ -33,3 +33,9 @@ JAIAudience::~JAIAudience()
 #ifdef DEBUG
 #pragma sym off
 #endif
+
+template <typename T>
+JASMemPool_MultiThreaded<T>::~JASMemPool_MultiThreaded() {}
+
+template <typename T>
+JASMemPool<T>::~JASMemPool() {}
