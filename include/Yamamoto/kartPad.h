@@ -56,22 +56,4 @@ public:
     u32 _54;
 };
 
-// TODO: this is incorrect, this is a global symbol, yet it has unreferenced duplicates... weird
-DECL_WEAK KartPad::KartPad()
-{
-    mAccelBtn = 0x100;
-    mTrigZ = 0x10;
-    mBtnB = 0x200;
-    mItemMask = 0xc00;
-    mBtnB2 = 0x200;
-    mFaceBtnsMask = mItemMask | 0x300;
-    mBtnY = 0x800;
-    mTrigL = 0x40;
-    mTrigR = 0x20;
-    _4C = 0;
-    _50 = 0;
-    _51 = 0;
-    _52 = 0;
-}
-
 #endif
